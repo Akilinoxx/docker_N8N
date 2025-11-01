@@ -1,0 +1,28 @@
+FROM n8nio/runners:1.117.3
+
+USER root
+
+# Installer les dépendances système nécessaires
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    wget \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
+# Installer vos packages Python
+RUN pip install --no-cache-dir \
+    crawl4ai \
+    playwright \
+    beautifulsoup4 \
+    lxml \
+    aiohttp \
+    aiofiles
+
+# Installer les navigateurs Playwright
+RUN playwright install --with-deps chromium
+
+# Variables d'environnement pour Playwright
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
+ENV PLAYWRIGHT_CHROMIUM_ARGS="--no-sandbox --disable-setuid-sandbox"
+
+USER node
